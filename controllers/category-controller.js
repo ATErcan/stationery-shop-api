@@ -23,8 +23,8 @@ const getCategoryById = async (req, res, next) => {
 
     res.status(200).json({ data: category });
   } catch (error) {
-    if (error.name === "CastError") {
-      return next(createError("Invalid category ID format", 400));
+    if (error.name === "CastError" || error.name === "BSONTypeError") {
+      return next(createError("Invalid category ID", 400));
     }
     return next(error);
   }

@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const { createError } = require("../utils/errors");
 const { buildProductQuery, buildSortQuery } = require("../utils/product-utils");
 
 const getProducts = async (req, res, next) => {
@@ -30,4 +31,22 @@ const getProducts = async (req, res, next) => {
   }
 }
 
-module.exports = { getProducts };
+const getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return next(createError("Product not found!", 404));
+    }
+
+    res.status(200).json({ data: product });
+  } catch (error) {
+    if (error.name === "CastError" || error.name === "BSONTypeError") {
+      return next(createError("Invalid product ID", 400));
+    }
+    return next(error);
+  }
+}
+
+module.exports = { getProducts, getProductById };
