@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 
 const router = express.Router();
 
+const authRoutes = require("./routes/auth-routes");
+
 const app = express();
 
 app.use(express.json());
@@ -31,3 +33,4 @@ try {
 }
 
 router.get("/", (req, res) => res.send("home"));
+app.use("/api", authRoutes);
