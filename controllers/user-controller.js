@@ -46,4 +46,26 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, updateUser };
+const deleteUser = async(req, res, next) => {
+  try {
+    const { userId } = req;
+
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      throw createError(
+        "User not found! If this error persist, please contact support",
+        404
+      );
+    }
+
+    await User.deleteOne({ _id: userId });
+
+    res.status(200).json({
+      message: "Account deleted successfully.",
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = { getUser, updateUser, deleteUser };
