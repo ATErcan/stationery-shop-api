@@ -62,4 +62,19 @@ const checkUser = async(user, password) => {
   }
 }
 
-module.exports = { createUser, checkUser };
+async function updateUserById(userId, updates) {
+  const { name, lastName } = updates;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw createError("User not found! If this error persists, please contact support", 404);
+  }
+
+  user.name = name;
+  user.lastName = lastName;
+
+  await user.save();
+  return user;
+}
+
+module.exports = { createUser, checkUser, updateUserById };
