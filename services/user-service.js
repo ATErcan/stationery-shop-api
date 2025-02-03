@@ -1,6 +1,8 @@
 const argon2 = require("argon2");
 
 const User = require("../models/User");
+const { createToken } = require("../utils/auth-utils");
+const { createError } = require("../utils/errors");
 
 const hashPassword = async (userData) => {
   const user = new User(userData);
@@ -39,4 +41,25 @@ const createUser = async (userData) => {
   }
 };
 
-module.exports = createUser;
+const checkUser = async(user, password) => {
+  try {
+    const verified = await argon2.verify(user.password, password);
+    if(verified) {
+      const token = createToken({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      });
+      return token;
+    } else {
+      throw createError("Invalid email or password", 401);
+    }
+  } catch (error) {
+    if (error.statusCode === 401) {
+      throw error;
+    }
+    throw createError("Failed to verify password (server error)", 500);
+  }
+}
+
+module.exports = { createUser, checkUser };
