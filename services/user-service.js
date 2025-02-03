@@ -46,9 +46,8 @@ const checkUser = async(user, password) => {
     const verified = await argon2.verify(user.password, password);
     if(verified) {
       const token = createToken({
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        _id: user._id,
+        isAdmin: user.isAdmin,
       });
       return token;
     } else {

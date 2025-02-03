@@ -7,6 +7,7 @@ const router = express.Router();
 
 const authRoutes = require("./routes/auth-routes");
 const userRoutes = require("./routes/user-routes");
+const categoryRoutes = require("./routes/category-routes");
 const handleErrors = require("./middleware/errors-middleware");
 const verifyUser = require("./middleware/auth-middleware");
 
@@ -38,5 +39,6 @@ try {
 
 router.get("/", (req, res) => res.send("home"));
 app.use("/api", authRoutes);
+app.use("/api", categoryRoutes);
 app.use("/api", verifyUser, userRoutes);
 app.use(handleErrors);
