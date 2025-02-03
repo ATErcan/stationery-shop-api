@@ -22,6 +22,13 @@ const signup = async (req, res, next) => {
       user: userData,
     });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (val) => val.message
+      );
+      const combinedMessage = validationErrors.join(", ");
+      return next(createError(`Validation Error: ${combinedMessage}`, 400));
+    }
     return next(error);
   }
 };
