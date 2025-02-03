@@ -7,7 +7,7 @@ const router = Router();
 const isAdminUser = require("../middleware/permission-middleware");
 
 router.get("/categories", categoryController.getAllCategories);
+router.get("/categories/:id", categoryController.getCategoryById);
 router.post("/categories", isAdminUser, categoryController.addNewCategory);
-// router.delete("/users/me", categoryController);
 
 module.exports = router;

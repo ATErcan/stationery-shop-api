@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const { createError } = require("../utils/errors");
 
 const getAllCategories = async (req, res, next) => {
   try {
@@ -9,6 +10,24 @@ const getAllCategories = async (req, res, next) => {
     return next(error);
   }
 };
+
+const getCategoryById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const category = await Category.findById(id);
+
+    if (!category) {
+      throw createError("Category not found!", 404);
+    }
+
+    res.status(200).json({ data: category });
+  } catch (error) {
+    if (error.name === "CastError") {
+      return next(createError("Invalid category ID format", 400));
+    }
+    return next(error);
+  }
+}
 
 const addNewCategory = async (req, res, next) => {
   try {
@@ -25,4 +44,4 @@ const addNewCategory = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllCategories, addNewCategory };
+module.exports = { getAllCategories, addNewCategory, getCategoryById };
