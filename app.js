@@ -5,8 +5,14 @@ const mongoose = require("mongoose");
 
 const router = express.Router();
 
+const authRoutes = require("./routes/auth-routes");
+const userRoutes = require("./routes/user-routes");
+const handleErrors = require("./middleware/errors-middleware");
+const verifyUser = require("./middleware/auth-middleware");
+
 const app = express();
 
+// middleware
 app.use(express.json());
 app.use("/api", router);
 
@@ -31,3 +37,6 @@ try {
 }
 
 router.get("/", (req, res) => res.send("home"));
+app.use("/api", authRoutes);
+app.use("/api", verifyUser, userRoutes);
+app.use(handleErrors);
