@@ -52,6 +52,8 @@ const deleteUser = async(req, res, next) => {
       );
     }
 
+    await Cart.deleteOne({ user: userId });
+
     await User.deleteOne({ _id: userId });
 
     res.status(200).json({
