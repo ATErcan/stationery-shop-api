@@ -11,7 +11,7 @@ const verifyUser = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = decodeToken(token);
-    req.userId = decoded.id;
+    req.userId = decoded._id;
     next();
   } catch (error) {
     return next(error);
