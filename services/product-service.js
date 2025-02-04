@@ -25,4 +25,4 @@ const createProductBaseOnCategory = (category, categoryName, productData) => {
   }
 };
 
-module.exports = { createProductBaseOnCategory }
+module.exports = { createProductBaseOnCategory };
