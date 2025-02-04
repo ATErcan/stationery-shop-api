@@ -1,6 +1,6 @@
 const Category = require("../models/Category");
 const { isCategoryExist } = require("../utils/category-utils");
-const { createError } = require("../utils/errors");
+const { createError, createValidationError } = require("../utils/errors");
 
 const getAllCategories = async (req, res, next) => {
   try {
@@ -23,8 +23,8 @@ const getCategoryById = async (req, res, next) => {
 
     res.status(200).json({ data: category });
   } catch (error) {
-    if (error.name === "CastError") {
-      return next(createError("Invalid category ID format", 400));
+    if (error.name === "CastError" || error.name === "BSONTypeError") {
+      return next(createError("Invalid category ID", 400));
     }
     return next(error);
   }
@@ -41,14 +41,8 @@ const addNewCategory = async (req, res, next) => {
     if (error.code === 11000) {
       return next(createError("Category name already exists", 409));
     }
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (val) => val.message
-      );
-      const combinedMessage = validationErrors.join(", ");
-      return next(createError(`Validation Error: ${combinedMessage}`, 400));
-    }
-    return next(error);
+    const validationError = createValidationError(error);
+    return next(validationError || error);
   }
 }
 
@@ -75,14 +69,8 @@ const updateCategory = async (req, res, next) => {
     if (error.code === 11000) {
       return next(createError("Category name already exists", 409));
     }
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (val) => val.message
-      );
-      const combinedMessage = validationErrors.join(", ");
-      return next(createError(`Validation Error: ${combinedMessage}`, 400));
-    }
-    return next(error);
+    const validationError = createValidationError(error);
+    return next(validationError || error);
   }
 }
 

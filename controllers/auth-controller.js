@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const { createUser, checkUser } = require("../services/user-service");
 const { createToken } = require("../utils/auth-utils");
-const { createError } = require("../utils/errors");
+const { createError, createValidationError } = require("../utils/errors");
 
 const signup = async (req, res, next) => {
   const { name, lastName, email, password } = req.body;
@@ -22,14 +22,8 @@ const signup = async (req, res, next) => {
       user: userData,
     });
   } catch (error) {
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (val) => val.message
-      );
-      const combinedMessage = validationErrors.join(", ");
-      return next(createError(`Validation Error: ${combinedMessage}`, 400));
-    }
-    return next(error);
+    const validationError = createValidationError(error);
+    return next(validationError || error);
   }
 };
 
