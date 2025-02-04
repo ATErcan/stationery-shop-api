@@ -8,7 +8,7 @@ const isAdminUser = require("../middleware/permission-middleware");
 
 router.get("/products", productController.getProducts);
 router.get("/products/:id", productController.getProductById);
-// router.post("/categories", isAdminUser, categoryController.addNewCategory);
+router.post("/products", isAdminUser, productController.addNewProduct);
 // router.patch("/categories/:id", isAdminUser, categoryController.updateCategory);
 
 module.exports = router;

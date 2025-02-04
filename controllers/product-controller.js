@@ -1,5 +1,7 @@
+const Category = require("../models/Category");
 const Product = require("../models/Product");
-const { createError } = require("../utils/errors");
+const { createProductBaseOnCategory } = require("../services/product-service");
+const { createError, createValidationError } = require("../utils/errors");
 const { buildProductQuery, buildSortQuery } = require("../utils/product-utils");
 
 const getProducts = async (req, res, next) => {
@@ -34,7 +36,7 @@ const getProducts = async (req, res, next) => {
 const getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate("category");
 
     if (!product) {
       return next(createError("Product not found!", 404));
@@ -49,4 +51,30 @@ const getProductById = async (req, res, next) => {
   }
 }
 
-module.exports = { getProducts, getProductById };
+const addNewProduct = async (req, res, next) => {
+  try {
+    const { category, ...productData } = req.body;
+    if(!category) {
+      return next(createError("Category is required", 400));
+    }
+
+    const categoryDoc = await Category.findById(category);
+    if(!categoryDoc) {
+      return next(createError("Invalid category ID", 404));
+    }
+
+    const { newProduct } = createProductBaseOnCategory(
+      category,
+      categoryDoc.name,
+      productData
+    );
+    await newProduct.save();
+
+    res.status(201).json({ data: newProduct });
+  } catch (error) {
+    const validationError = createValidationError(error);
+    return next(validationError || error);
+  }
+}
+
+module.exports = { getProducts, getProductById, addNewProduct };

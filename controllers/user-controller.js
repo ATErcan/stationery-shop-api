@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const { updateUserById } = require("../services/user-service");
-const { createError } = require("../utils/errors");
+const { createError, createValidationError } = require("../utils/errors");
 
 const getUser = async (req, res, next) => {
   try {
@@ -35,14 +35,8 @@ const updateUser = async (req, res, next) => {
 
     res.status(200).json({ data: userData });
   } catch (error) {
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (val) => val.message
-      );
-      const combinedMessage = validationErrors.join(", ");
-      return next(createError(`Validation Error: ${combinedMessage}`, 400));
-    }
-    return next(error);
+    const validationError = createValidationError(error);
+    return next(validationError || error);
   }
 };
 
