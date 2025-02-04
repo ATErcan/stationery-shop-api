@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth-routes");
 const userRoutes = require("./routes/user-routes");
 const categoryRoutes = require("./routes/category-routes");
 const productRoutes = require("./routes/product-routes");
+const cartRoutes = require("./routes/cart-routes");
 const handleErrors = require("./middleware/errors-middleware");
 const verifyUser = require("./middleware/auth-middleware");
 
@@ -43,4 +44,5 @@ app.use("/api", authRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
 app.use("/api", verifyUser, userRoutes);
+app.use("/api", verifyUser, cartRoutes);
 app.use(handleErrors);

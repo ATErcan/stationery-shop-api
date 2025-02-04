@@ -143,6 +143,11 @@ const deleteProduct = async (req, res, next) => {
       return next(createError("Product not found", 404));
     }
 
+    await Cart.updateMany(
+      { "items.product": id }, 
+      { $pull: { items: { product: id } } }
+    );
+
     res.status(200).json({
       message: "Product deleted successfully.",
     });
