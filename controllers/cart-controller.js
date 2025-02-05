@@ -11,7 +11,16 @@ const getCart = async (req, res, next) => {
 
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
     if (!cart) {
-      return next(createError("Cart not found", 404));
+      const cart = new Cart({ user: userId, items: [] });
+      await cart.save();
+
+      return res.status(200).json({
+        page: 1,
+        totalPages: 1,
+        totalItemsInCart: 0,
+        pageSize: 10,
+        data: [],
+      });
     }
 
     const sortedItems = cart.items.sort((a, b) => b.updatedAt - a.updatedAt);
@@ -71,4 +80,18 @@ const addToCart = async (req, res, next) => {
   }
 };
 
-module.exports = { getCart, addToCart };
+const clearCart = async (req, res, next) => {
+  try {
+    const { userId } = req;
+
+    await Cart.deleteOne({ user: userId });
+
+    res.status(200).json({
+      message: "Cart cleared successfully.",
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = { getCart, addToCart, clearCart };

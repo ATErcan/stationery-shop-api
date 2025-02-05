@@ -1,3 +1,4 @@
+const Cart = require("../models/Cart");
 const User = require("../models/User");
 const { updateUserById } = require("../services/user-service");
 const { createError, createValidationError } = require("../utils/errors");

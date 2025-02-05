@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const router = express.Router();
 
@@ -16,6 +17,12 @@ const verifyUser = require("./middleware/auth-middleware");
 const app = express();
 
 // middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/api", router);
 
