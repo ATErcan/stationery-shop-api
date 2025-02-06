@@ -10,6 +10,7 @@ const stationerySchema = new mongoose.Schema({
   brand: {
     type: String,
     maxlength: [30, "Brand name must be at most 30 characters"],
+    required: [true, "Brand is required"],
   },
 });
 
