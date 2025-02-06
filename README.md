@@ -22,6 +22,11 @@ The Stationery Shop API is the backend service for the Stationery Shop e-commerc
 ## Authors
 
 - [@ATErcan](https://www.github.com/ATErcan)
+  
+Ahmet Talha Ercan
+
+StudentID: 42169
+
 All codes in this project are written by me.
 
 
